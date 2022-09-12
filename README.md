@@ -197,7 +197,7 @@ docker network create \
 ## Updates
 
 ```bash
-dokku git:from-image pihole pihole/pihole:latest
+dokku ps:stop pihole; dokku ps:rebuild pihole
 ```
 
 ## Used Sources
