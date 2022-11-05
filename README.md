@@ -22,7 +22,7 @@ I've decided to write out some of my own after finally succeeding with my own se
 ## Prerequisites
 
 Following prerequisites fall out of the scope of this installation guide:
-- [Git][https://git-scm.com/]
+- [Git](https://git-scm.com/)
 - [Docker](https://www.docker.com/)
 - [Dokku](https://dokku.com/)
     - Linked domain name *(e.g. my-dokku-server.com)*
@@ -210,7 +210,7 @@ docker network create \
 ## Updates
 
 ```bash
-dokku ps:stop pihole; dokku ps:rebuild pihole
+dokku ps:stop pihole; docker pull pihole/pihole:latest; dokku ps:rebuild pihole
 ```
 
 ## Used Sources
