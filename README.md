@@ -22,6 +22,7 @@ I've decided to write out some of my own after finally succeeding with my own se
 ## Prerequisites
 
 Following prerequisites fall out of the scope of this installation guide:
+- [Git][https://git-scm.com/]
 - [Docker](https://www.docker.com/)
 - [Dokku](https://dokku.com/)
     - Linked domain name *(e.g. my-dokku-server.com)*
@@ -59,26 +60,38 @@ Following prerequisites fall out of the scope of this installation guide:
 
 ## Installation
 
-### **1.** Setup `macvlan0` network
-- **1.1.** Create a synology `macvlan0` bridge network attached to the physical `eth0` adapter:   
+### **1.** Setup persistent `macvlan0` network with `systemd`
+
+- **1.1.** Move to your home directory and clone this repository with `git`:   
 
     ```bash
-    sudo ip link add macvlan0 link eth0 type macvlan mode bridge
+    cd ~; git clone https://github.com/Rikj000/Pihole-Dokku-Installation.git
     ```
 
-- **1.2.** Reserve part of the `eth0` IP-range scope for the `macvlan0`:   
+- **1.2.** Copy the scripts to the right locations on the OS:   
 
     ```bash
-    sudo ip addr add 192.168.0.210/28 dev macvlan0
+    sudo cp ~/Pihole-Dokku-Installation/scripts/enable-macvlan.sh /usr/bin/enable-macvlan
+    sudo cp ~/Pihole-Dokku-Installation/scripts/enable-macvlan.service /lib/systemd/system/enable-macvlan.service
     ```
 
-- **1.3.** Bring up the virtual `macvlan0` adapter:   
+- **1.3.** Setup the right permissions for the scripts:   
 
     ```bash
-    sudo ip link set macvlan0 up
+    sudo chmod u+x /usr/bin/enable-macvlan
+    sudo chmod 644 /lib/systemd/system/enable-macvlan.service
     ```
 
-- **1.4.** Check virtual adapter status with `ifconfig`:
+    **Note:** If your network setup differs, then you will need to modify `/usr/bin/enable-macvlan`
+
+- **1.4.** Start the `enable-macvlan` service + Enable it to auto-start on boot:
+
+    ```bash
+    sudo systemctl start enable-macvlan
+    sudo systemctl enable enable-macvlan
+    ```
+
+- **1.5.** Check virtual adapter status with `ifconfig`:
 
     ```bash
     ifconfig
@@ -207,3 +220,4 @@ dokku ps:stop pihole; dokku ps:rebuild pihole
 - [Github Gist - Pihole-Macvlan-Synology-Docker](https://gist.github.com/xirixiz/ecad37bac9a07c2a1204ab4f9a17db3c)
 - [Blog - Free your Synology ports for Docker](https://tonylawrence.com/posts/unix/synology/free-your-synology-ports/)
 - [Blog - Set up a PiHole using Docker MacVlan Networks](https://blog.ivansmirnov.name/set-up-pihole-using-docker-macvlan-network/)
+- [Blog - Use systemd to Start a Linux Service at Boot](https://www.linode.com/docs/guides/start-service-at-boot/)

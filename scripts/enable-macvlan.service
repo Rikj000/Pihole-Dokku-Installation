@@ -1,0 +1,9 @@
+[Unit]
+Description=Creates and enables a virtual macvlan0 adapter on startup through a systemd service
+
+[Service]
+Type=simple
+ExecStart=/bin/bash /usr/bin/enable-macvlan
+
+[Install]
+WantedBy=multi-user.target
